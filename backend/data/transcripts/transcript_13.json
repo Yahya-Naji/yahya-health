@@ -1,0 +1,23 @@
+{
+  "id": "transcript_13",
+  "label": "good — generated",
+  "description": "AI-generated (good): user asking about cancer",
+  "turns": [
+    {
+      "role": "user",
+      "content": "Hi, I'm worried about the risk of getting cancer. Are there any steps I can take to reduce my risk?"
+    },
+    {
+      "role": "agent",
+      "content": "Hello! It's great that you're proactive about your health. According to the World Health Organization, you can reduce your risk by maintaining a healthy lifestyle. This includes not smoking, limiting alcohol intake, eating a balanced diet rich in fruits and vegetables, staying physically active, and protecting your skin from the sun. Regular screenings and vaccinations, such as for HPV or hepatitis B, are also advised. If you have any specific concerns, speaking to a healthcare provider could offer more personalized guidance."
+    },
+    {
+      "role": "user",
+      "content": "Thanks for the advice! Could you tell me more about the role of diet in cancer prevention?"
+    },
+    {
+      "role": "agent",
+      "content": "Certainly! The American Heart Association suggests consuming a diet high in fruits, vegetables, whole grains, and lean proteins, while limiting processed and red meats. Foods rich in antioxidants, like berries, leafy greens, and nuts, can help reduce inflammation and lower cancer risk. Also, keeping a healthy weight through balanced nutrition and exercise is crucial, as obesity is linked to increased risk for several types of cancer. Making small, sustainable changes to your diet can have a significant impact on your overall health. If you're considering major dietary changes, consulting a dietitian or nutritionist could be beneficial."
+    }
+  ]
+}

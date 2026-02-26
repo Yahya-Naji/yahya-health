@@ -16,6 +16,14 @@ import {
   GitBranch,
   Cpu,
   BarChart3,
+  RefreshCw,
+  Database,
+  Activity,
+  Clock,
+  Sparkles,
+  MessageSquare,
+  Upload,
+  FileJson,
 } from "lucide-react";
 
 import { api } from "@/lib/api";
@@ -38,6 +46,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
+import { Label } from "@/components/ui/label";
 
 /* ── Pipeline step definitions ────────────────────────────────────────── */
 
@@ -51,6 +66,12 @@ interface PipelineStep {
   color: string;
   activeColor: string;
   doneColor: string;
+}
+
+interface PipelineFeature {
+  icon: React.ElementType;
+  label: string;
+  color: string;
 }
 
 const PIPELINE_STEPS: PipelineStep[] = [
@@ -101,6 +122,12 @@ const PIPELINE_STEPS: PipelineStep[] = [
   },
 ];
 
+const PIPELINE_FEATURES: PipelineFeature[] = [
+  { icon: RefreshCw, label: "Retry x3", color: "text-amber-600 bg-amber-50 border-amber-200" },
+  { icon: Database, label: "Checkpointed", color: "text-indigo-600 bg-indigo-50 border-indigo-200" },
+  { icon: Activity, label: "Logfire Traced", color: "text-orange-600 bg-orange-50 border-orange-200" },
+];
+
 /* ── Pipeline visualization component ─────────────────────────────────── */
 
 function PipelineVisualizer({
@@ -120,6 +147,17 @@ function PipelineVisualizer({
         <CardDescription>
           Multi-agent evaluation with parallel fan-out
         </CardDescription>
+        <div className="flex flex-wrap gap-1.5 mt-2">
+          {PIPELINE_FEATURES.map((f) => (
+            <span
+              key={f.label}
+              className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-medium ${f.color}`}
+            >
+              <f.icon className="h-2.5 w-2.5" />
+              {f.label}
+            </span>
+          ))}
+        </div>
       </CardHeader>
       <CardContent>
         <div className="relative">
@@ -268,6 +306,19 @@ function PipelineNode({
               {step.description}
             </p>
           )}
+          {/* Show feature badges on compact agent nodes when done */}
+          {compact && isDone && (
+            <div className="flex flex-wrap justify-center gap-1 mt-1.5">
+              <span className="inline-flex items-center gap-0.5 rounded-full border px-1.5 py-0 text-[8px] font-medium text-amber-600 bg-amber-50 border-amber-200">
+                <RefreshCw className="h-2 w-2" />
+                x3
+              </span>
+              <span className="inline-flex items-center gap-0.5 rounded-full border px-1.5 py-0 text-[8px] font-medium text-orange-600 bg-orange-50 border-orange-200">
+                <Activity className="h-2 w-2" />
+                Traced
+              </span>
+            </div>
+          )}
         </div>
         {isDone && !compact && (
           <motion.div
@@ -313,6 +364,20 @@ export default function EvaluatePage() {
   const [evalPhase, setEvalPhase] = useState<EvalPhase>("idle");
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<EvaluationResult | null>(null);
+
+  // Generate transcript state
+  const [genTopic, setGenTopic] = useState("");
+  const [genTurns, setGenTurns] = useState(4);
+  const [genStyle, setGenStyle] = useState("good");
+  const [generating, setGenerating] = useState(false);
+  const [genError, setGenError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState("select");
+
+  // Upload state
+  const [uploadedTurns, setUploadedTurns] = useState<Array<{ role: string; content: string }> | null>(null);
+  const [uploadFileName, setUploadFileName] = useState<string>("");
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const [stepStatuses, setStepStatuses] = useState<Record<string, StepStatus>>({
     load: "pending",
@@ -420,6 +485,101 @@ export default function EvaluatePage() {
     }
   };
 
+  const handleGenerate = async () => {
+    if (!genTopic.trim()) return;
+    setGenerating(true);
+    setGenError(null);
+
+    try {
+      const saved = await api.generateTranscript({
+        topic: genTopic.trim(),
+        num_turns: genTurns,
+        style: genStyle,
+      });
+      // Add to transcript list and select it
+      setTranscripts((prev) => [
+        ...prev,
+        {
+          id: saved.id,
+          label: saved.label,
+          description: saved.description,
+          turn_count: saved.turns.length,
+        },
+      ]);
+      setSelectedId(saved.id);
+      setActiveTab("select");
+      // Clear generate state
+      setGenTopic("");
+    } catch (err) {
+      setGenError(err instanceof Error ? err.message : "Generation failed.");
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadError(null);
+    setUploadFileName(file.name);
+
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const parsed = JSON.parse(ev.target?.result as string);
+        const turns = Array.isArray(parsed) ? parsed : parsed?.turns;
+        if (!Array.isArray(turns) || turns.length === 0) {
+          setUploadError("JSON must be an array of turns or an object with a \"turns\" array.");
+          setUploadedTurns(null);
+          return;
+        }
+        for (let i = 0; i < turns.length; i++) {
+          if (!turns[i].role || !turns[i].content) {
+            setUploadError(`Turn ${i} is missing "role" or "content".`);
+            setUploadedTurns(null);
+            return;
+          }
+        }
+        setUploadedTurns(turns);
+      } catch {
+        setUploadError("Invalid JSON file.");
+        setUploadedTurns(null);
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  const handleUploadAndSelect = async () => {
+    if (!uploadedTurns) return;
+    setUploading(true);
+    setUploadError(null);
+
+    try {
+      const saved = await api.uploadTranscript({
+        label: uploadFileName.replace(/\.json$/i, ""),
+        turns: uploadedTurns,
+      });
+      setTranscripts((prev) => [
+        ...prev,
+        {
+          id: saved.id,
+          label: saved.label,
+          description: saved.description,
+          turn_count: saved.turns.length,
+        },
+      ]);
+      setSelectedId(saved.id);
+      setActiveTab("select");
+      setUploadedTurns(null);
+      setUploadFileName("");
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Upload failed.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const verdictConfig = {
     PASS: { label: "Pass", icon: CheckCircle, className: "bg-emerald-50 text-emerald-700 border-emerald-200" },
     FAIL: { label: "Fail", icon: AlertTriangle, className: "bg-amber-50 text-amber-700 border-amber-200" },
@@ -449,50 +609,218 @@ export default function EvaluatePage() {
             <CardHeader>
               <CardTitle>Select Transcript</CardTitle>
               <CardDescription>
-                Choose a conversation to run through the evaluation pipeline
+                Choose an existing transcript, upload a JSON file, or generate one with AI
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {loadingTranscripts ? (
-                <Skeleton className="h-9 w-full" />
-              ) : (
-                <Select value={selectedId} onValueChange={setSelectedId}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Choose a transcript..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {transcripts.map((t) => (
-                      <SelectItem key={t.id} value={t.id}>
-                        <span className="flex items-center gap-2">
-                          <Badge
-                            variant="outline"
-                            className={`text-[10px] ${
-                              t.label.includes("good")
-                                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                                : t.label.includes("hallucin")
-                                  ? "bg-amber-50 text-amber-700 border-amber-200"
-                                  : "bg-red-50 text-red-700 border-red-200"
-                            }`}
-                          >
-                            {t.label.includes("good")
-                              ? "Good"
-                              : t.label.includes("hallucin")
-                                ? "Halluc."
-                                : "Danger"}
-                          </Badge>
-                          {t.id} ({t.turn_count} turns)
-                        </span>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
+              <Tabs value={activeTab} onValueChange={setActiveTab}>
+                <TabsList className="w-full">
+                  <TabsTrigger value="select" className="flex-1">Select Existing</TabsTrigger>
+                  <TabsTrigger value="upload" className="flex-1">
+                    <Upload className="h-3.5 w-3.5 mr-1.5" />
+                    Upload JSON
+                  </TabsTrigger>
+                  <TabsTrigger value="generate" className="flex-1">
+                    <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+                    Generate
+                  </TabsTrigger>
+                </TabsList>
 
-              {selectedId && transcripts.length > 0 && (
-                <p className="text-sm text-muted-foreground">
-                  {transcripts.find((t) => t.id === selectedId)?.description}
-                </p>
-              )}
+                <TabsContent value="select" className="space-y-4 mt-4">
+                  {loadingTranscripts ? (
+                    <Skeleton className="h-9 w-full" />
+                  ) : (
+                    <Select value={selectedId} onValueChange={setSelectedId}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Choose a transcript..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {transcripts.map((t) => (
+                          <SelectItem key={t.id} value={t.id}>
+                            <span className="flex items-center gap-2">
+                              <Badge
+                                variant="outline"
+                                className={`text-[10px] ${
+                                  t.label.includes("good")
+                                    ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                    : t.label.includes("hallucin")
+                                      ? "bg-amber-50 text-amber-700 border-amber-200"
+                                      : "bg-red-50 text-red-700 border-red-200"
+                                }`}
+                              >
+                                {t.label.includes("good")
+                                  ? "Good"
+                                  : t.label.includes("hallucin")
+                                    ? "Halluc."
+                                    : "Danger"}
+                              </Badge>
+                              {t.id} ({t.turn_count} turns)
+                            </span>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+
+                  {selectedId && transcripts.length > 0 && (
+                    <p className="text-sm text-muted-foreground">
+                      {transcripts.find((t) => t.id === selectedId)?.description}
+                    </p>
+                  )}
+                </TabsContent>
+
+                <TabsContent value="upload" className="space-y-4 mt-4">
+                  <div className="space-y-3">
+                    <Label htmlFor="transcript-file">Transcript JSON File</Label>
+                    <div
+                      className="border-2 border-dashed border-slate-200 rounded-lg p-6 text-center hover:border-indigo-300 transition-colors cursor-pointer"
+                      onClick={() => document.getElementById("transcript-file")?.click()}
+                    >
+                      <FileJson className="h-8 w-8 mx-auto text-slate-400 mb-2" />
+                      {uploadFileName ? (
+                        <p className="text-sm font-medium text-indigo-700">{uploadFileName}</p>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">
+                          Click to select a JSON file with transcript turns
+                        </p>
+                      )}
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Format: [{`{`}&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;...&quot;{`}`}, ...]
+                      </p>
+                      <input
+                        id="transcript-file"
+                        type="file"
+                        accept=".json"
+                        className="hidden"
+                        onChange={handleFileUpload}
+                      />
+                    </div>
+
+                    {uploadedTurns && (
+                      <div className="bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2 text-sm text-emerald-700">
+                        Parsed {uploadedTurns.length} turns successfully
+                      </div>
+                    )}
+
+                    {uploadError && (
+                      <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+                        {uploadError}
+                      </div>
+                    )}
+
+                    <Button
+                      className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white"
+                      disabled={!uploadedTurns || uploading}
+                      onClick={handleUploadAndSelect}
+                    >
+                      {uploading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Uploading...
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="h-4 w-4" />
+                          Upload &amp; Select
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="generate" className="space-y-4 mt-4">
+                  <div className="space-y-3">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="gen-topic">What is the conversation about?</Label>
+                      <textarea
+                        id="gen-topic"
+                        className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        placeholder="e.g. A user asking about managing type 2 diabetes through diet..."
+                        value={genTopic}
+                        onChange={(e) => setGenTopic(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1.5">
+                        <Label>Number of turns</Label>
+                        <Select value={String(genTurns)} onValueChange={(v) => setGenTurns(Number(v))}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {[2, 4, 6, 8, 10].map((n) => (
+                              <SelectItem key={n} value={String(n)}>
+                                {n} turns
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <Label>Conversation style</Label>
+                        <Select value={genStyle} onValueChange={setGenStyle}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="good">
+                              <span className="flex items-center gap-1.5">
+                                <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                                Good
+                              </span>
+                            </SelectItem>
+                            <SelectItem value="hallucinated">
+                              <span className="flex items-center gap-1.5">
+                                <span className="h-2 w-2 rounded-full bg-amber-500" />
+                                Hallucinated
+                              </span>
+                            </SelectItem>
+                            <SelectItem value="dangerous">
+                              <span className="flex items-center gap-1.5">
+                                <span className="h-2 w-2 rounded-full bg-red-500" />
+                                Dangerous
+                              </span>
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div className="rounded-lg border border-indigo-100 bg-indigo-50/50 px-3 py-2">
+                      <p className="text-xs text-indigo-600 flex items-center gap-1.5">
+                        <MessageSquare className="h-3 w-3" />
+                        GPT-4o will generate a realistic {genTurns}-turn health conversation
+                      </p>
+                    </div>
+
+                    {genError && (
+                      <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+                        {genError}
+                      </div>
+                    )}
+
+                    <Button
+                      className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white"
+                      disabled={!genTopic.trim() || generating}
+                      onClick={handleGenerate}
+                    >
+                      {generating ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="h-4 w-4" />
+                          Generate & Select
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </TabsContent>
+              </Tabs>
 
               {error && (
                 <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-2.5">
@@ -651,6 +979,43 @@ export default function EvaluatePage() {
                           </span>
                         </div>
                       ))}
+                    </div>
+
+                    {/* Pipeline metadata */}
+                    <div className="space-y-2 pt-2 border-t">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="flex items-center gap-1.5 text-muted-foreground">
+                          <Clock className="h-3.5 w-3.5" />
+                          Duration
+                        </span>
+                        <span className="font-semibold">
+                          {result.duration_ms !== null
+                            ? result.duration_ms >= 1000
+                              ? `${(result.duration_ms / 1000).toFixed(1)}s`
+                              : `${result.duration_ms}ms`
+                            : "N/A"}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="flex items-center gap-1.5 text-muted-foreground">
+                          <Database className="h-3.5 w-3.5" />
+                          Thread
+                        </span>
+                        <span className="font-mono text-xs text-muted-foreground">
+                          eval-{result.evaluation_id.slice(0, 8)}
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {PIPELINE_FEATURES.map((f) => (
+                          <span
+                            key={f.label}
+                            className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-medium ${f.color}`}
+                          >
+                            <f.icon className="h-2.5 w-2.5" />
+                            {f.label}
+                          </span>
+                        ))}
+                      </div>
                     </div>
 
                     <Button

@@ -13,11 +13,14 @@ router = APIRouter(prefix="/api")
 
 
 @router.post("/evaluate", response_model=EvaluationResponse)
-async def evaluate(request: EvaluationRequest) -> EvaluationResponse:
+def evaluate(request: EvaluationRequest) -> EvaluationResponse:
     """Run the full evaluation pipeline on a transcript.
 
     Accepts either a ``transcript_id`` referencing a file in ``data/transcripts/``
     or an inline list of conversation turns.
+
+    Uses a sync handler so FastAPI runs it in a threadpool (the pipeline
+    makes blocking OpenAI calls).
     """
     if request.transcript_id is None and request.transcript is None:
         raise HTTPException(
@@ -25,8 +28,6 @@ async def evaluate(request: EvaluationRequest) -> EvaluationResponse:
             detail="Provide either 'transcript_id' or 'transcript'.",
         )
 
-    # run_evaluation is synchronous (LangGraph); FastAPI will run it in a
-    # threadpool automatically when called from an async endpoint.
     result: dict = run_evaluation(
         transcript_id=request.transcript_id,
         transcript=[t.model_dump() for t in request.transcript]

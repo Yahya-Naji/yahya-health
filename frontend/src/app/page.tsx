@@ -15,11 +15,13 @@ import {
   XCircle,
   AlertTriangle,
   BarChart3,
-  Clock,
   Cpu,
   GitBranch,
   Sparkles,
   Activity,
+  RefreshCw,
+  Eye,
+  MessageSquare,
 } from "lucide-react";
 
 /* ── Hero images ──────────────────────────────────────────────────────── */
@@ -66,8 +68,29 @@ const features = [
     icon: GitBranch,
     title: "Multi-Agent Pipeline",
     description:
-      "LangGraph orchestrates 3 specialized agents in parallel fan-out, with a deterministic aggregator for the final verdict.",
+      "LangGraph orchestrates 3 specialized agents in parallel fan-out with retry policies, checkpointing, and a deterministic aggregator.",
     gradient: "from-fuchsia-500 to-pink-500",
+  },
+  {
+    icon: MessageSquare,
+    title: "AI Transcript Generation",
+    description:
+      "Generate realistic test conversations on any health topic. Choose from good, hallucinated, or dangerous styles to stress-test the pipeline.",
+    gradient: "from-pink-500 to-rose-500",
+  },
+  {
+    icon: Eye,
+    title: "Logfire Observability & Evals",
+    description:
+      "Every evaluation is traced with Logfire — OpenAI calls, agent scores, and verdicts. Pydantic Evals reports each run to the Logfire Evals dashboard.",
+    gradient: "from-rose-500 to-orange-500",
+  },
+  {
+    icon: RefreshCw,
+    title: "Retry & Checkpointing",
+    description:
+      "LangGraph RetryPolicy auto-retries failed LLM calls up to 3 times. MemorySaver checkpoints state after every node for replay and debugging.",
+    gradient: "from-orange-500 to-amber-500",
   },
 ];
 
@@ -77,23 +100,23 @@ const pipelineSteps = [
   {
     step: "01",
     icon: Cpu,
-    title: "Load & Parse Transcript",
+    title: "Load or Generate Transcript",
     description:
-      "The pipeline ingests a conversation between a user and the health AI agent, normalizing turns for evaluation.",
+      "Select an existing transcript, or generate one with AI — describe a topic, pick a style (good, hallucinated, or dangerous), and the system creates a realistic conversation.",
   },
   {
     step: "02",
     icon: Brain,
     title: "Parallel Agent Evaluation",
     description:
-      "Three GPT-4o judges run simultaneously — Empathy, Groundedness, and Medical Safety — each with specialized prompts and scoring rubrics.",
+      "Three GPT-4o judges run simultaneously — Empathy, Groundedness, and Medical Safety — each with retry policies and checkpointed state for reliability.",
   },
   {
     step: "03",
     icon: BarChart3,
-    title: "Aggregate & Verdict",
+    title: "Score, Verdict & Report",
     description:
-      "A deterministic aggregator combines scores (40% Groundedness, 30% Empathy, 30% Safety). Any HARD_FAIL from Safety overrides everything.",
+      "A deterministic aggregator combines scores (40% Groundedness, 30% Empathy, 30% Safety). Results are persisted, audit-logged, and reported to Logfire Evals.",
   },
 ];
 
@@ -135,9 +158,9 @@ const metrics = [
   { value: "3", label: "Parallel Agents", icon: Brain },
   { value: "GPT-4o", label: "Judge LLM", icon: Cpu },
   { value: "15", label: "KB Guidelines", icon: BookOpen },
-  { value: "12", label: "Test Transcripts", icon: Activity },
-  { value: "0.0", label: "Temperature", icon: Clock },
-  { value: "100%", label: "Structured JSON", icon: Sparkles },
+  { value: "12+", label: "Test Transcripts", icon: Activity },
+  { value: "3x", label: "Auto-Retry", icon: RefreshCw },
+  { value: "Logfire", label: "Observability", icon: Eye },
 ];
 
 /* ── Animations ───────────────────────────────────────────────────────── */
@@ -601,7 +624,7 @@ export default function LandingPage() {
               Syd Life AI &copy; {new Date().getFullYear()}
             </span>
           </div>
-          <span>LangGraph + GPT-4o + FastAPI</span>
+          <span>LangGraph + GPT-4o + FastAPI + Logfire</span>
         </div>
       </footer>
     </div>

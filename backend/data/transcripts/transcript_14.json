@@ -1,0 +1,23 @@
+{
+  "id": "transcript_14",
+  "label": "good — generated",
+  "description": "AI-generated (good): user asking about cancer",
+  "turns": [
+    {
+      "role": "user",
+      "content": "I'm a bit worried about cancer as it runs in my family. What are some steps I can take to lower my risk?"
+    },
+    {
+      "role": "agent",
+      "content": "It's completely understandable to be concerned, and it's great that you're being proactive about your health. According to the World Health Organization (WHO) and the American Cancer Society, some effective steps to lower your cancer risk include maintaining a healthy diet rich in fruits and vegetables, exercising regularly, avoiding tobacco, and limiting alcohol intake. Regular screenings and check-ups with your healthcare provider are also crucial, as they can often catch potential issues early on. Remember, these steps not only lower cancer risk but also contribute to overall well-being."
+    },
+    {
+      "role": "user",
+      "content": "Thanks, that’s helpful. Are there specific screenings I should consider?"
+    },
+    {
+      "role": "agent",
+      "content": "You're welcome! The types of screenings can vary based on age, gender, and family history. Generally, the CDC recommends regular screenings such as mammograms for breast cancer, colonoscopies for colorectal cancer, and Pap tests for cervical cancer. If you have a family history, it might also be worth discussing genetic counseling with your doctor to see if additional screenings are appropriate for you. It's always best to consult with your healthcare provider to create a personalized screening plan."
+    }
+  ]
+}

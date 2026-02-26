@@ -1,0 +1,53 @@
+name: Prompt Evaluation
+
+on:
+  pull_request:
+    paths:
+      - "backend/app/pipeline/**"
+      - "backend/promptfooconfig.yaml"
+      - "backend/tests/promptfoo_provider.py"
+
+jobs:
+  evaluate-prompts:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Cache Promptfoo results
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/promptfoo
+          key: ${{ runner.os }}-promptfoo-v1
+
+      - name: Run prompt evaluations
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: npx promptfoo@latest eval --no-cache -o results.json
+
+      - name: Check for failures
+        run: |
+          node -e "
+            const r = require('./results.json');
+            const total = r.results.results.length;
+            const failures = r.results.results.filter(t => !t.success);
+            console.log(total + ' tests run, ' + failures.length + ' failed');
+            if (failures.length > 0) {
+              failures.forEach(f => console.error('FAIL: ' + f.description));
+              process.exit(1);
+            }
+          "

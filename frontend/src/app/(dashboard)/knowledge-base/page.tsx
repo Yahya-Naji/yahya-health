@@ -71,7 +71,7 @@ export default function KnowledgeBasePage() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Knowledge Base</h1>
         <p className="text-muted-foreground mt-1">
-          Scientifically grounded health guidelines
+          {entries.length} scientifically grounded health guidelines used by the Groundedness Agent
         </p>
       </div>
 

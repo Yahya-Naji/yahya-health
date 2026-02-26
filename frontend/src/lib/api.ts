@@ -47,4 +47,35 @@ export const api = {
 
   getKnowledgeBase: () =>
     apiFetch<{ entries: KnowledgeBaseEntry[] }>("/api/knowledge-base"),
+
+  addKnowledgeBaseEntry: (body: {
+    guideline: string;
+    category: string;
+    source: string;
+    tags: string[];
+  }) =>
+    apiFetch<KnowledgeBaseEntry>("/api/knowledge-base", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+
+  uploadTranscript: (body: {
+    label?: string;
+    description?: string;
+    turns: Array<{ role: string; content: string }>;
+  }) =>
+    apiFetch<TranscriptData>("/api/transcripts", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+
+  generateTranscript: (body: {
+    topic: string;
+    num_turns: number;
+    style: string;
+  }) =>
+    apiFetch<TranscriptData>("/api/transcripts/generate", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
 };

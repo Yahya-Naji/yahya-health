@@ -1,7 +1,7 @@
 # AI Collaboration Log
 
 ## Tools Used
-- **Claude Opus 4.6** (via Claude Code CLI) — Architecture design, code generation, data creation
+- **Cursor** — Architecture design, code generation, data creation
 
 ## Prompt Examples
 
@@ -19,6 +19,11 @@
 > "Create the LangGraph pipeline files. Build 3 agent functions that call GPT-4o with response_format=json_object and temperature=0.0. Use parallel fan-out edges in the StateGraph."
 
 **Result:** Generated the complete pipeline with proper error handling and structured logging.
+
+### Prompt 4: Observability & Testing Integration
+> "Look into Promptfoo and Logfire. Check how we can enrich the backend — do first Logfire evals, then LangGraph, then Promptfoo for local and CI tests."
+
+**Result:** Integrated Logfire for full observability (auto-instrumented OpenAI + FastAPI + custom agent spans), added LangGraph checkpointing (MemorySaver) and RetryPolicy on all agents, created Promptfoo test suite with 5 test cases covering all verdict types, and a GitHub Actions CI workflow that blocks PRs if prompts regress.
 
 ## AI Correction Instance
 

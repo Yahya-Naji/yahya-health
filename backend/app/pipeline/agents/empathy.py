@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import logging
 
+import logfire
 from openai import OpenAI
 
 from app.config import settings
@@ -27,45 +28,47 @@ def evaluate_empathy(state: EvaluationState) -> dict:
     transcript: list[dict] = state["transcript"]
 
     try:
-        # Build the user message from transcript turns
-        turns_text = "\n".join(
-            f"[Turn {i}] {turn['role']}: {turn['content']}"
-            for i, turn in enumerate(transcript)
-        )
-        user_message = (
-            "Evaluate the following conversation transcript for empathy:\n\n"
-            f"{turns_text}"
-        )
+        with logfire.span("empathy_agent", evaluation_id=evaluation_id):
+            # Build the user message from transcript turns
+            turns_text = "\n".join(
+                f"[Turn {i}] {turn['role']}: {turn['content']}"
+                for i, turn in enumerate(transcript)
+            )
+            user_message = (
+                "Evaluate the following conversation transcript for empathy:\n\n"
+                f"{turns_text}"
+            )
 
-        response = _client.chat.completions.create(
-            model=settings.OPENAI_MODEL,
-            temperature=0.0,
-            response_format={"type": "json_object"},
-            messages=[
-                {"role": "system", "content": EMPATHY_SYSTEM_PROMPT},
-                {"role": "user", "content": user_message},
-            ],
-        )
+            response = _client.chat.completions.create(
+                model=settings.OPENAI_MODEL,
+                temperature=0.0,
+                response_format={"type": "json_object"},
+                messages=[
+                    {"role": "system", "content": EMPATHY_SYSTEM_PROMPT},
+                    {"role": "user", "content": user_message},
+                ],
+            )
 
-        raw = json.loads(response.choices[0].message.content)
+            raw = json.loads(response.choices[0].message.content)
 
-        result = {
-            "agent_name": "empathy",
-            "score": float(raw["score"]),
-            "verdict": raw["verdict"],
-            "reasoning": raw["reasoning"],
-            "flagged_turns": raw.get("flagged_turns", []),
-            "metadata": {},
-        }
+            result = {
+                "agent_name": "empathy",
+                "score": float(raw["score"]),
+                "verdict": raw["verdict"],
+                "reasoning": raw["reasoning"],
+                "flagged_turns": raw.get("flagged_turns", []),
+                "metadata": {},
+            }
 
-        audit_logger.log_evaluation(
-            evaluation_id=evaluation_id,
-            event="agent_completed",
-            data={"agent": "empathy", "score": result["score"], "verdict": result["verdict"]},
-        )
+            audit_logger.log_evaluation(
+                evaluation_id=evaluation_id,
+                event="agent_completed",
+                data={"agent": "empathy", "score": result["score"], "verdict": result["verdict"]},
+            )
 
-        logger.info("Empathy evaluation complete: score=%.2f verdict=%s", result["score"], result["verdict"])
-        return {"empathy_result": result}
+            logfire.info("Empathy agent completed", score=result["score"], verdict=result["verdict"])
+            logger.info("Empathy evaluation complete: score=%.2f verdict=%s", result["score"], result["verdict"])
+            return {"empathy_result": result}
 
     except Exception as exc:
         logger.exception("Empathy evaluation failed: %s", exc)
