@@ -30,12 +30,13 @@ if _logfire_ok:
     logfire.instrument_fastapi(app)
 
 # ---------------------------------------------------------------------------
-# CORS -- allow the React dev server on localhost:3000
+# CORS -- allow the React dev server and Vercel production
 # ---------------------------------------------------------------------------
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
+        "https://yahya-health.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
