@@ -1,0 +1,39 @@
+{
+  "id": "transcript_02",
+  "label": "good",
+  "description": "Agent discusses sleep hygiene based on National Sleep Foundation recommendations (7-9 hours for adults)",
+  "turns": [
+    {
+      "role": "user",
+      "content": "I've been sleeping about 5 hours a night and feel exhausted all the time. Is that enough sleep?"
+    },
+    {
+      "role": "agent",
+      "content": "Five hours is likely not enough. According to the National Sleep Foundation, adults aged 18-64 should aim for 7 to 9 hours of sleep per night. Consistently getting less than the recommended amount can affect your mood, cognitive function, and overall health. It's understandable that life gets busy, but prioritizing sleep is really important."
+    },
+    {
+      "role": "user",
+      "content": "I try to go to bed early but I just lie there for hours. Any tips?"
+    },
+    {
+      "role": "agent",
+      "content": "That's a common issue. The National Sleep Foundation recommends several sleep hygiene practices that can help. First, try to maintain a consistent sleep schedule by going to bed and waking up at the same time every day, even on weekends. Second, create a relaxing bedtime routine, such as reading or taking a warm bath, about 30-60 minutes before bed. Also, avoid screens during that wind-down period since the blue light can suppress melatonin production."
+    },
+    {
+      "role": "user",
+      "content": "What about my bedroom environment? Does that matter?"
+    },
+    {
+      "role": "agent",
+      "content": "Absolutely. The National Sleep Foundation recommends keeping your bedroom cool, dark, and quiet. A temperature around 65-68 degrees Fahrenheit tends to be optimal for sleep. Consider blackout curtains if outside light is an issue, and use earplugs or a white noise machine if noise is a problem. It's also best to reserve your bed for sleep and intimacy only, so your brain associates the bed with rest rather than wakefulness."
+    },
+    {
+      "role": "user",
+      "content": "Should I take melatonin supplements?"
+    },
+    {
+      "role": "agent",
+      "content": "Melatonin can be helpful for some people, particularly for jet lag or short-term sleep difficulties. However, it's best to try the behavioral and environmental changes first, as they tend to have more lasting effects. If you're still struggling after implementing good sleep hygiene practices for a few weeks, I'd recommend speaking with your healthcare provider. They can help determine whether melatonin or other interventions might be appropriate for your situation."
+    }
+  ]
+}

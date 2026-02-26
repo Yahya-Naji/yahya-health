@@ -1,0 +1,39 @@
+{
+  "id": "transcript_04",
+  "label": "good",
+  "description": "Agent discusses stress management using APA-grounded techniques (mindfulness, deep breathing)",
+  "turns": [
+    {
+      "role": "user",
+      "content": "I've been under a lot of stress at work and it's starting to affect my health. My shoulders are always tense and I get headaches. What can I do?"
+    },
+    {
+      "role": "agent",
+      "content": "I'm sorry to hear you're dealing with that. Chronic stress can definitely manifest physically. The American Psychological Association recognizes several evidence-based techniques for managing stress. One of the most well-supported is deep breathing exercises. A simple approach is diaphragmatic breathing: inhale slowly through your nose for about 4 seconds, hold for 4 seconds, then exhale through your mouth for 6 seconds. Even a few minutes of this can activate your body's relaxation response."
+    },
+    {
+      "role": "user",
+      "content": "I've heard about mindfulness too. Does that actually work or is it just a fad?"
+    },
+    {
+      "role": "agent",
+      "content": "Mindfulness is well-supported by research. The APA highlights mindfulness meditation as an effective stress management tool. It involves paying attention to the present moment without judgment. Studies have shown that regular mindfulness practice can reduce levels of cortisol, the stress hormone, and improve emotional regulation. Even starting with just 5 to 10 minutes a day of guided meditation can make a noticeable difference over a few weeks."
+    },
+    {
+      "role": "user",
+      "content": "Are there other things I should be doing besides breathing and mindfulness?"
+    },
+    {
+      "role": "agent",
+      "content": "Definitely. The APA recommends a multi-pronged approach to stress management. Regular physical activity is a powerful stress reducer. Maintaining strong social connections and talking to friends, family, or a therapist can also help. Setting boundaries at work, taking regular breaks, and practicing good time management are practical steps too. The APA also emphasizes the importance of adequate sleep and limiting caffeine and alcohol, as both can worsen stress responses."
+    },
+    {
+      "role": "user",
+      "content": "Should I see a therapist about this?"
+    },
+    {
+      "role": "agent",
+      "content": "If your stress is persistent and significantly impacting your daily life, physical health, or relationships, then yes, speaking with a mental health professional is a great idea. The APA notes that cognitive behavioral therapy, or CBT, is particularly effective for stress management. A therapist can help you identify specific stress triggers and develop personalized coping strategies. There's no threshold you need to meet before seeking help. If it's affecting your quality of life, that's reason enough."
+    }
+  ]
+}

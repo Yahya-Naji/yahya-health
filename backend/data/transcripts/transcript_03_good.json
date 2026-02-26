@@ -1,0 +1,31 @@
+{
+  "id": "transcript_03",
+  "label": "good",
+  "description": "Agent recommends cancer screening based on USPSTF guidelines (colorectal screening ages 45-75)",
+  "turns": [
+    {
+      "role": "user",
+      "content": "I just turned 45 and my doctor mentioned something about getting screened for colon cancer. Is that really necessary at my age?"
+    },
+    {
+      "role": "agent",
+      "content": "Yes, it's a well-supported recommendation. The U.S. Preventive Services Task Force, or USPSTF, recommends that adults begin colorectal cancer screening at age 45 and continue through age 75. Colorectal cancer is one of the most common cancers, and early detection through screening significantly improves outcomes. So your doctor is right on track with current guidelines."
+    },
+    {
+      "role": "user",
+      "content": "What kind of screening would I need? I've heard colonoscopies are unpleasant."
+    },
+    {
+      "role": "agent",
+      "content": "There are actually several screening options recommended by the USPSTF. A colonoscopy every 10 years is one option, but there are also less invasive alternatives. These include stool-based tests like the fecal immunochemical test (FIT) done annually, or the FIT-DNA test (like Cologuard) every one to three years. There's also CT colonography every five years and flexible sigmoidoscopy every five years. Each has different pros and cons, so it's worth discussing with your doctor which option is the best fit for you."
+    },
+    {
+      "role": "user",
+      "content": "What about after 75? Do I still need to get screened?"
+    },
+    {
+      "role": "agent",
+      "content": "For adults aged 76 to 85, the USPSTF says the decision to screen should be individualized. It depends on factors like your overall health, prior screening history, and personal preferences. Screening in that age range may have a smaller net benefit. For adults over 85, the USPSTF recommends against screening. But these are conversations to have with your healthcare provider when the time comes, as they can take your full medical history into account."
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+[
+  {
+    "id": "kb-001",
+    "guideline": "Adults should aim for at least 150 minutes of moderate-intensity aerobic activity per week, or 75 minutes of vigorous-intensity activity, plus muscle-strengthening activities on 2 or more days per week.",
+    "category": "exercise",
+    "source": "WHO Physical Activity Guidelines 2020",
+    "tags": ["exercise", "aerobic", "strength"]
+  },
+  {
+    "id": "kb-002",
+    "guideline": "Adults aged 45-75 should undergo colorectal cancer screening. Options include an annual fecal immunochemical test (FIT), a stool DNA test every 1-3 years, or a colonoscopy every 10 years.",
+    "category": "screening",
+    "source": "USPSTF Recommendation 2021",
+    "tags": ["screening", "cancer", "colonoscopy"]
+  },
+  {
+    "id": "kb-003",
+    "guideline": "A diet rich in fruits, vegetables, whole grains, and lean proteins reduces the risk of cardiovascular disease. Limit sodium intake to less than 2300mg per day and added sugars to less than 10% of daily calories.",
+    "category": "nutrition",
+    "source": "AHA Dietary Guidelines 2021",
+    "tags": ["nutrition", "heart", "sodium"]
+  },
+  {
+    "id": "kb-004",
+    "guideline": "Adults should aim for 7-9 hours of sleep per night. Poor sleep quality is associated with increased risk of obesity, diabetes, cardiovascular disease, and depression.",
+    "category": "sleep",
+    "source": "National Sleep Foundation 2022",
+    "tags": ["sleep", "rest", "circadian"]
+  },
+  {
+    "id": "kb-005",
+    "guideline": "All adults should receive an annual influenza vaccine. Adults 65 and older should also receive a pneumococcal vaccine and a shingles vaccine (Shingrix, two doses).",
+    "category": "vaccination",
+    "source": "CDC Immunization Schedule 2024",
+    "tags": ["vaccine", "flu", "immunization"]
+  },
+  {
+    "id": "kb-006",
+    "guideline": "Blood pressure should be checked at least once every 2 years for adults 18-39 with normal readings, and annually for adults 40 and older or those with risk factors. Normal blood pressure is below 120/80 mmHg.",
+    "category": "screening",
+    "source": "AHA/ACC Hypertension Guidelines 2023",
+    "tags": ["blood-pressure", "screening", "hypertension"]
+  },
+  {
+    "id": "kb-007",
+    "guideline": "Stress management techniques such as mindfulness meditation, deep breathing exercises, and regular physical activity can reduce cortisol levels and improve mental well-being. Seeking professional help is recommended if stress significantly impairs daily functioning.",
+    "category": "mental_health",
+    "source": "APA Stress Management Guidelines 2023",
+    "tags": ["stress", "mental-health", "mindfulness"]
+  },
+  {
+    "id": "kb-008",
+    "guideline": "Adults should limit alcohol consumption to no more than 2 standard drinks per day for men and 1 for women. No amount of alcohol is considered completely safe during pregnancy.",
+    "category": "substance_use",
+    "source": "WHO Alcohol Guidelines 2023",
+    "tags": ["alcohol", "moderation", "substance"]
+  },
+  {
+    "id": "kb-009",
+    "guideline": "Women aged 21-65 should have a Pap smear every 3 years or, for ages 30-65, co-testing with HPV test every 5 years. HPV vaccination is recommended for individuals aged 9-26.",
+    "category": "screening",
+    "source": "ACOG Cervical Cancer Screening 2021",
+    "tags": ["screening", "cervical", "HPV"]
+  },
+  {
+    "id": "kb-010",
+    "guideline": "Tobacco cessation at any age significantly reduces the risk of lung cancer, heart disease, and stroke. Nicotine replacement therapy, prescription medications, and behavioral counseling are evidence-based cessation aids.",
+    "category": "substance_use",
+    "source": "USPSTF Tobacco Cessation Recommendation 2021",
+    "tags": ["smoking", "tobacco", "cessation"]
+  },
+  {
+    "id": "kb-011",
+    "guideline": "Adults aged 35-70 who are overweight or obese should be screened for prediabetes and type 2 diabetes. A fasting blood glucose test, HbA1c, or oral glucose tolerance test may be used for screening.",
+    "category": "screening",
+    "source": "USPSTF Diabetes Screening 2021",
+    "tags": ["diabetes", "screening", "glucose"]
+  },
+  {
+    "id": "kb-012",
+    "guideline": "Adequate hydration supports kidney function, digestion, and cognitive performance. The general recommendation is approximately 3.7 liters per day for men and 2.7 liters for women from all beverages and food combined.",
+    "category": "nutrition",
+    "source": "National Academies of Sciences 2004 (reaffirmed 2023)",
+    "tags": ["hydration", "water", "kidney"]
+  },
+  {
+    "id": "kb-013",
+    "guideline": "Adults should consume 1000-1200mg of calcium and 600-800 IU of vitamin D daily to maintain bone health. Weight-bearing exercises also help prevent osteoporosis.",
+    "category": "nutrition",
+    "source": "NOF Clinician's Guide to Prevention 2022",
+    "tags": ["calcium", "vitamin-d", "bones"]
+  },
+  {
+    "id": "kb-014",
+    "guideline": "Skin cancer prevention includes using broad-spectrum SPF 30+ sunscreen, wearing protective clothing, avoiding tanning beds, and performing monthly self-examinations for changes in moles or skin lesions.",
+    "category": "prevention",
+    "source": "AAD Skin Cancer Prevention 2023",
+    "tags": ["skin", "sunscreen", "cancer"]
+  },
+  {
+    "id": "kb-015",
+    "guideline": "Social connections and community engagement are protective factors for mental health. Loneliness and social isolation are associated with increased risk of depression, anxiety, heart disease, and premature mortality.",
+    "category": "mental_health",
+    "source": "US Surgeon General Advisory on Social Connection 2023",
+    "tags": ["social", "loneliness", "mental-health"]
+  }
+]

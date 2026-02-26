@@ -1,0 +1,31 @@
+{
+  "id": "transcript_01",
+  "label": "good",
+  "description": "Agent gives exercise recommendations grounded in WHO guidelines (150 min/week moderate activity)",
+  "turns": [
+    {
+      "role": "user",
+      "content": "I've been pretty sedentary lately and I want to start exercising. How much should I be doing each week?"
+    },
+    {
+      "role": "agent",
+      "content": "Great question! According to the World Health Organization guidelines, adults aged 18-64 should aim for at least 150 minutes of moderate-intensity aerobic activity per week, or at least 75 minutes of vigorous-intensity activity. You can also do an equivalent combination of both. This works out to roughly 30 minutes of moderate activity five days a week."
+    },
+    {
+      "role": "user",
+      "content": "What counts as moderate-intensity? I'm not sure what qualifies."
+    },
+    {
+      "role": "agent",
+      "content": "Moderate-intensity activities include brisk walking, cycling at a casual pace, water aerobics, or even gardening. A good rule of thumb from the WHO is that during moderate activity, you should be able to talk but not sing. If you're breathing hard and can only say a few words at a time, that's vigorous intensity, like jogging or swimming laps."
+    },
+    {
+      "role": "user",
+      "content": "Should I also be doing strength training?"
+    },
+    {
+      "role": "agent",
+      "content": "Yes, the WHO also recommends muscle-strengthening activities involving major muscle groups on two or more days per week. This can include bodyweight exercises like push-ups and squats, resistance band work, or weight lifting. These activities help maintain bone density and muscle mass as you age. Since you've been sedentary, I'd suggest starting slowly and gradually building up. If you have any underlying health conditions, it's a good idea to check with your doctor before beginning a new exercise program."
+    }
+  ]
+}
